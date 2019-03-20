@@ -16,8 +16,12 @@ const routes: Routes = [
     loadChildren: './board-list/board-list.module#BoardListPageModule'
   },
   {
-    path: 'board',
+    path: 'board/:boardId',
     loadChildren: './board-tabs/board-tabs.module#BoardTabsPageModule'
+  },
+  {
+    path: 'new-board',
+    loadChildren: './new-board/new-board.module#NewBoardPageModule'
   }
 ];
 

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-list',
@@ -20,7 +21,8 @@ export class BoardListPage implements OnInit {
     'build'
   ];
   public items: Array<{ title: string; note: string; icon: string }> = [];
-  constructor() {
+
+  constructor(private router: Router) {
     for (let i = 1; i < 11; i++) {
       this.items.push({
         title: 'Item ' + i,
@@ -32,8 +34,9 @@ export class BoardListPage implements OnInit {
 
   ngOnInit() {
   }
-  // add back when alpha.4 is out
-  // navigate(item) {
-  //   this.router.navigate(['/board-list', JSON.stringify(item)]);
-  // }
+
+  navigateToBoard(item) {
+    this.router.navigate([`/board/${'passIdTODO'}`]);
+  }
+
 }

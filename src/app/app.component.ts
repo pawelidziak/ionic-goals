@@ -16,14 +16,9 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'List',
+      title: 'Your boards',
       url: '/boards',
       icon: 'list'
-    },
-    {
-      title: 'Your boards',
-      url: '/board',
-      icon: 'bookmark'
     }
   ];
   constructor(
