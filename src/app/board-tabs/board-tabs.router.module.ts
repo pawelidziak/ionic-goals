@@ -1,18 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import { BoardTabsPage } from './board-tabs.page';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'tabs/tab1',
+    pathMatch: 'full'
+  },
+  {
     path: 'tabs',
-    component: TabsPage,
+    component: BoardTabsPage,
     children: [
       {
         path: 'tab1',
         children: [
           {
             path: '',
-            loadChildren: '../tab1/tab1.module#Tab1PageModule'
+            loadChildren: './tabs/tab1/tab1.module#Tab1PageModule'
           }
         ]
       },
@@ -21,7 +26,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab2/tab2.module#Tab2PageModule'
+            loadChildren: './tabs/tab2/tab2.module#Tab2PageModule'
           }
         ]
       },
@@ -30,7 +35,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule'
+            loadChildren: './tabs/tab3/tab3.module#Tab3PageModule'
           }
         ]
       },
@@ -40,11 +45,6 @@ const routes: Routes = [
         pathMatch: 'full'
       }
     ]
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/tab1',
-    pathMatch: 'full'
   }
 ];
 
@@ -54,4 +54,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class BoardTabsPageRoutingModule {}
