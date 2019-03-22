@@ -9,19 +9,19 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
+    loadChildren: './pages/home/home.module#HomePageModule'
   },
   {
     path: 'boards',
-    loadChildren: './board-list/board-list.module#BoardListPageModule'
+    loadChildren: './pages/board-list/board-list.module#BoardListPageModule'
   },
   {
     path: 'board/:boardId',
-    loadChildren: './board-tabs/board-tabs.module#BoardTabsPageModule'
+    loadChildren: './pages/board-tabs/board-tabs.module#BoardTabsPageModule'
   },
   {
     path: 'new-board',
-    loadChildren: './new-board/new-board.module#NewBoardPageModule'
+    loadChildren: './pages/new-board/new-board.module#NewBoardPageModule'
   }
 ];
 

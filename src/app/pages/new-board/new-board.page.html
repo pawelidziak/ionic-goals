@@ -1,0 +1,62 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/boards"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Create board</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form [formGroup]="newBoardForm" (submit)="createBoard()">
+
+        <ion-list>
+            <!-- TITLE -->
+            <ion-item>
+                <ion-input type="text"
+                           formControlName="title"
+                           placeholder="Title"
+                           required>
+                </ion-input>
+            </ion-item>
+
+            <!-- DESCRIPTION -->
+            <ion-item>
+                <ion-input formControlName="description" placeholder="Description"></ion-input>
+            </ion-item>
+
+            <!-- COLOR -->
+            <ion-item>
+                <ion-label color="medium">Color</ion-label>
+                <span class="color-picker" [style.background-color]="selectedColor"></span>
+                <ion-select interface="popover"
+                            (ionChange)="onSelectChange($event)"
+                            formControlName="color">
+                    <span style="color: red !important;">COS</span>
+                    <ion-select-option *ngFor="let color of colors"
+                                       [value]="color.value"
+                                       [style.color]="color.hex">
+                        <span [style.color]="color.hex">{{color.label}}</span>
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+
+            <!-- START DATE -->
+            <ion-item disabled>
+                <ion-label slot="start">Start Date</ion-label>
+                <ion-input type="text"
+                           style="text-align: right"
+                           formControlName="startDate"></ion-input>
+            </ion-item>
+
+            <!-- SUBMIT -->
+            <ion-button class="submit-btn"
+                        expand="block"
+                        type="submit"
+                        [disabled]="!newBoardForm.valid">
+                Create
+            </ion-button>
+        </ion-list>
+    </form>
+
+</ion-content>

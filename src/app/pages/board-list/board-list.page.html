@@ -1,0 +1,39 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            List
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button routerLink="/new-board">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-list>
+        <ion-item *ngFor="let board of tmpBoards" (click)="navigateToBoard(board)" routerLink>
+            <div slot="start"
+                 class="board-icon"
+                 [style.background-color]="board.color">
+                <span class="board-letter" >{{board.title[0].toUpperCase()}}</span>
+            </div>
+            <ion-label text-wrap>
+                <ion-text color="primary">
+                    <h2>{{board.title}}</h2>
+                </ion-text>
+                <ion-text>
+                    <p>{{board.startDate}}</p>
+                </ion-text>
+                <ion-text color="medium">
+                    <p>{{board.description}}</p>
+                </ion-text>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>
