@@ -1,92 +1,78 @@
 <ion-header>
     <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
         <ion-title>
-            Tab One
+            {{currentBoard.title}}
         </ion-title>
+        <ion-buttons slot="end">
+            <ion-button>
+                <ion-icon slot="icon-only" name="settings"></ion-icon>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <!--<ion-card class="welcome-card">-->
-    <!--<ion-img src="/assets/shapes.svg"></ion-img>-->
-    <!--<ion-card-header>-->
-    <!--<ion-card-subtitle>Get Started</ion-card-subtitle>-->
-    <!--<ion-card-title>Welcome to Ionic</ion-card-title>-->
-    <!--</ion-card-header>-->
-    <!--<ion-card-content>-->
-    <!--<p>Now that your app has been created, you'll want to start building out features and components. Check out some of the resources below for next steps.</p>-->
-    <!--</ion-card-content>-->
-    <!--</ion-card>-->
-    <!--<ion-list lines="none">-->
-    <!--<ion-list-header>-->
-    <!--<ion-label>Resources</ion-label>-->
-    <!--</ion-list-header>-->
-    <!--<ion-item href="https://ionicframework.com/docs/">-->
-    <!--<ion-icon slot="start" color="medium" name="book"></ion-icon>-->
-    <!--<ion-label>Ionic Documentation</ion-label>-->
-    <!--</ion-item>-->
-    <!--<ion-item href="https://ionicframework.com/docs/building/scaffolding">-->
-    <!--<ion-icon slot="start" color="medium" name="build"></ion-icon>-->
-    <!--<ion-label>Scaffold Out Your App</ion-label>-->
-    <!--</ion-item>-->
-    <!--<ion-item href="https://ionicframework.com/docs/layout/structure">-->
-    <!--<ion-icon slot="start" color="medium" name="grid"></ion-icon>-->
-    <!--<ion-label>Change Your App Layout</ion-label>-->
-    <!--</ion-item>-->
-    <!--<ion-item href="https://ionicframework.com/docs/theming/basics">-->
-    <!--<ion-icon slot="start" color="medium" name="color-fill"></ion-icon>-->
-    <!--<ion-label>Theme Your App</ion-label>-->
-    <!--</ion-item>-->
-    <!--</ion-list>-->
-
-
-    <ion-list>
-        <ion-item-sliding *ngFor="let goal of currentBoard.goals">
-            <ion-item>
-                <ion-label>
-                    <ion-text>
+    <ion-card>
+        <ion-img src="/assets/shapes.svg"></ion-img>
+        <ion-card-header>
+            <ion-card-subtitle>{{nowDate | date}}</ion-card-subtitle>
+            <ion-card-title>Goals for today</ion-card-title>
+        </ion-card-header>
+        <ion-card-content no-padding>
+            <ion-list>
+                <ion-item *ngFor="let goal of goalsTodo; let i=index"
+                          [lines]="i < goalsTodo.length - 1 ? 'full' : 'none'">
+                    <ion-label text-wrap>
                         <h2>{{goal.name}}</h2>
-                    </ion-text>
-                    <ion-text>
                         <p>{{goal.description}}</p>
-                    </ion-text>
-                </ion-label>
-            </ion-item>
-            <!--<ion-item-options side="start">-->
-            <!--&lt;!&ndash;<ion-icon slot="icon-only" name="checkmark"></ion-icon>&ndash;&gt;-->
+                    </ion-label>
+                    <ion-button fill="clear" size="medium" color="success"
+                                no-margin
+                                (click)="goalDone(goal)">
+                        <ion-icon slot="icon-only" name="thumbs-up"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" size="medium" color="danger"
+                                no-margin
+                                (click)="goalFailed(goal)">
+                        <ion-icon slot="icon-only" name="thumbs-down"></ion-icon>
+                    </ion-button>
+                </ion-item>
 
-            <!--</ion-item-options>-->
 
-            <ion-item-options side="end">
-                <ion-item-option color="success"
-                                 (click)="favorite(goal.name)"
-                                 style="min-width: 50px;">
-                    <ion-icon name="checkmark"></ion-icon>
-                </ion-item-option>
-                <ion-item-option color="danger"
-                                 (click)="sharer(goal.name)"
-                                 style="min-width: 50px;">
-                    <ion-icon name="close"></ion-icon>
-                </ion-item-option>
-            </ion-item-options>
-        </ion-item-sliding>
-        <ion-item *ngFor="let goal of currentBoard.goals"
-                  [ngClass]="{'goal-done': goal.isDone}">
-            <ion-label text-wrap>
-                <ion-text>
-                    <h2>{{goal.name}}</h2>
-                </ion-text>
-                <ion-text>
-                    <p>{{goal.description}}</p>
-                </ion-text>
-            </ion-label>
-            <ion-button shape="round" fill="clear">
-                <ion-icon color="success" slot="icon-only" name="checkmark"></ion-icon>
-            </ion-button>
-            <ion-button shape="round" fill="clear">
-                <ion-icon color="danger" slot="icon-only" name="close"></ion-icon>
-            </ion-button>
-        </ion-item>
-    </ion-list>
+                <ion-item *ngFor="let goal of goalsDone; let i=index"
+                          class="goal-done"
+                          [lines]="i < goalsDone.length - 1 ? 'full' : 'none'">
+                    <ion-label text-wrap>
+                        <h2>{{goal.name}}</h2>
+                    </ion-label>
+                    <ion-badge no-margin color="success">done</ion-badge>
+                    <ion-button fill="clear" size="medium"
+                                no-margin
+                                (click)="undoToTodo(goal)">
+                        <ion-icon slot="icon-only" name="undo"></ion-icon>
+                    </ion-button>
+                </ion-item>
 
+
+                <ion-item *ngFor="let goal of goalsFailed; let i=index"
+                          class="goal-done"
+                          [lines]="i < goalsFailed.length - 1 ? 'full' : 'none'">
+                    <ion-label text-wrap>
+                        <h2>{{goal.name}}</h2>
+                    </ion-label>
+                    <ion-badge no-margin color="danger">fail</ion-badge>
+                    <ion-button fill="clear" size="medium"
+                                no-margin
+                                (click)="undoToTodo(goal)">
+                        <ion-icon slot="icon-only" name="undo"></ion-icon>
+                    </ion-button>
+                </ion-item>
+            </ion-list>
+
+
+        </ion-card-content>
+    </ion-card>
 </ion-content>
