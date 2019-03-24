@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {BoardService} from '../../core/services/board.service';
+import {BoardService} from '@core/services/board.service';
 
 @Component({
   selector: 'app-tabs',

@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {BOARD_COLORS} from './boardColors';
-import {Board} from '../../core/models/Board';
-import {BoardColor} from '../../core/models/BoardColor';
+import {Board} from '@core/models/Board';
+import {BoardColor} from '@core/models/BoardColor';
 
 @Component({
   selector: 'app-new-board',

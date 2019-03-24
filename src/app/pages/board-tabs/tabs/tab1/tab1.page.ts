@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BoardService} from '../../../../core/services/board.service';
-import {Board} from '../../../../core/models/Board';
-import {Goal} from '../../../../core/models/Goal';
+import {BoardService} from '@core/services/board.service';
+import {Board} from '@core/models/Board';
+import {Goal} from '@core/models/Goal';
 
 @Component({
   selector: 'app-tab1',

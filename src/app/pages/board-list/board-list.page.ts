@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {Board} from '../../core/models/Board';
-import {BOARD_COLORS} from '../new-board/boardColors';
-import {BoardColor} from '../../core/models/BoardColor';
+import {Board} from '@core/models/Board';
+import {BOARD_COLORS} from '@pages/new-board/boardColors';
+import {BoardColor} from '@core/models/BoardColor';
 
 @Component({
   selector: 'app-list',
