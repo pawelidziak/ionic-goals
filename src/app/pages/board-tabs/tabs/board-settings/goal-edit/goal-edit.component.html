@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            {{goal ? 'Update' : 'Add'}} Goal
+        </ion-title>
+        <ion-button slot="end" fill="clear" (click)="dismissGoalModal()">Cancel</ion-button>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+    <form [formGroup]="goalForm" (submit)="submitGoal()">
+
+        <ion-list>
+            <!-- NAME -->
+            <ion-item>
+                <ion-input type="text"
+                           formControlName="name"
+                           placeholder="Name"
+                           required>
+                </ion-input>
+            </ion-item>
+
+            <!-- DESCRIPTION -->
+            <ion-item>
+                <ion-input formControlName="description" placeholder="Description"></ion-input>
+            </ion-item>
+
+            <!-- SUBMIT -->
+            <ion-button class="submit-btn"
+                        expand="block"
+                        type="submit"
+                        [disabled]="!goalForm.valid">
+                {{goal ? 'Update' : 'Add'}}
+            </ion-button>
+        </ion-list>
+    </form>
+</ion-content>

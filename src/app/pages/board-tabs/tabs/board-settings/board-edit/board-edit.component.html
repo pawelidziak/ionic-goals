@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Update Board
+    </ion-title>
+    <ion-button slot="end" fill="clear" (click)="dismissBoardModal()">Cancel</ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <form [formGroup]="boardForm" (submit)="submitBoard()">
+
+    <ion-list>
+      <!-- TITLE -->
+      <ion-item>
+        <ion-input type="text"
+                   formControlName="title"
+                   placeholder="Title"
+                   required>
+        </ion-input>
+      </ion-item>
+
+      <!-- DESCRIPTION -->
+      <ion-item>
+        <ion-textarea formControlName="description" placeholder="Description"></ion-textarea>
+      </ion-item>
+
+      <!-- COLOR -->
+      <ion-item>
+        <ion-label color="medium">Color</ion-label>
+        <span class="color-picker" [style.background-color]="selectedColor"></span>
+        <ion-select interface="popover"
+                    (ionChange)="onSelectChange($event)"
+                    formControlName="color">
+          <ion-select-option *ngFor="let color of colors"
+                             [value]="color.value"
+                             [style.color]="color.hex">
+            <span [style.color]="color.hex">{{color.label}}</span>
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- START DATE -->
+      <ion-item disabled>
+        <ion-label slot="start">Start Date</ion-label>
+        <ion-input type="text"
+                   text-right
+                   formControlName="startDate"></ion-input>
+      </ion-item>
+
+      <!-- SUBMIT -->
+      <ion-button class="submit-btn"
+                  expand="block"
+                  type="submit"
+                  [disabled]="!boardForm.valid">
+        Update
+      </ion-button>
+    </ion-list>
+  </form>
+</ion-content>

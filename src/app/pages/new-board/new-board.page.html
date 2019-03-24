@@ -22,7 +22,7 @@
 
             <!-- DESCRIPTION -->
             <ion-item>
-                <ion-input formControlName="description" placeholder="Description"></ion-input>
+                <ion-textarea formControlName="description" placeholder="Description"></ion-textarea>
             </ion-item>
 
             <!-- COLOR -->
@@ -32,7 +32,6 @@
                 <ion-select interface="popover"
                             (ionChange)="onSelectChange($event)"
                             formControlName="color">
-                    <span style="color: red !important;">COS</span>
                     <ion-select-option *ngFor="let color of colors"
                                        [value]="color.value"
                                        [style.color]="color.hex">

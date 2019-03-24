@@ -31,11 +31,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab3',
+        path: 'settings',
         children: [
           {
             path: '',
-            loadChildren: './tabs/tab3/tab3.module#Tab3PageModule'
+            loadChildren: './tabs/board-settings/board-settings.module#BoardSettingsPageModule'
           }
         ]
       },

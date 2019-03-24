@@ -1,5 +1,7 @@
 {
   "name": "ionic-goals",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

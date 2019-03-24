@@ -1,15 +1,18 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {BoardService} from '@core/services/board.service';
 import {Board} from '@core/models/Board';
 import {Goal} from '@core/models/Goal';
+import {ModalController} from '@ionic/angular';
+import {GoalEditComponent} from '../board-settings/goal-edit/goal-edit.component';
+import {OverlayEventDetail} from '@ionic/core';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  styleUrls: ['tab1.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Tab1Page implements OnInit, OnDestroy {
-
   currentBoard: Board;
   nowDate: Date = new Date();
   startDate: Date;
@@ -17,7 +20,9 @@ export class Tab1Page implements OnInit, OnDestroy {
   goalsDone: Goal[] = [];
   goalsFailed: Goal[] = [];
 
-  constructor(private boardService: BoardService) {
+  constructor(private boardService: BoardService,
+              private changeDetector: ChangeDetectorRef,
+              private modalController: ModalController) {
     window.addEventListener('beforeunload', () => {
       // TODO save progress to server
       console.log('destr')
@@ -69,4 +74,11 @@ export class Tab1Page implements OnInit, OnDestroy {
     list.sort((a, b) => a.number > b.number ? 1 : -1);
   }
 
+
+
+  private addNewGoal(newGoal: Goal): void {
+    newGoal.number = this.currentBoard.goals.length;
+    this.goalsTodo.push(newGoal);
+    this.currentBoard.goals.push(newGoal);
+  }
 }

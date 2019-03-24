@@ -1,0 +1,67 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            {{currentBoard.title}}
+        </ion-title>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-item>
+            <ion-icon color="primary" name="apps" slot="start"></ion-icon>
+            <ion-label>
+                <h2 class="card-title">Board information</h2>
+                <p>Change board information.</p>
+            </ion-label>
+
+            <ion-button fill="clear" slot="end" color="medium" (click)="openBoardModal()">
+                <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-button>
+        </ion-item>
+        <ion-card-content>
+            <ion-label text-wrap>
+                <p>{{startDate | date}}</p>
+                <h2 class="board-title">{{currentBoard.title}}</h2>
+                <p>{{currentBoard.description}}</p>
+            </ion-label>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-item>
+            <ion-icon color="primary" name="flag" slot="start"></ion-icon>
+            <ion-label>
+                <h2 class="card-title">Goals</h2>
+                <p>Add or edit Your goals.</p>
+            </ion-label>
+
+            <ion-button fill="clear" slot="end" color="medium" (click)="openNewGoalModal()">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+        </ion-item>
+        <ion-card-content no-padding>
+
+            <ion-list *ngIf="currentBoard.goals.length > 0">
+                <ion-item *ngFor="let goal of currentBoard.goals; let i=index"
+                          (click)="openNewGoalModal(goal)"
+                          [lines]="i < currentBoard.goals.length - 1 ? 'full' : 'none'">
+                    <ion-label text-wrap>
+                        <h2>{{goal.name}}</h2>
+                        <p>{{goal.description}}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-list>
+
+            <div class="no-goals" *ngIf="currentBoard.goals.length === 0" text-center>
+                <ion-icon size="large" color="primary" name="sad" margin-bottom="24"></ion-icon>
+                <ion-text>You have no goals. Add some!</ion-text>
+            </div>
+
+        </ion-card-content>
+    </ion-card>
+</ion-content>
