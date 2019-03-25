@@ -5,7 +5,7 @@ import { BoardTabsPage } from './board-tabs.page';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'tabs/tab1',
+    redirectTo: 'tabs/goals',
     pathMatch: 'full'
   },
   {
@@ -13,11 +13,11 @@ const routes: Routes = [
     component: BoardTabsPage,
     children: [
       {
-        path: 'tab1',
+        path: 'goals',
         children: [
           {
             path: '',
-            loadChildren: './tabs/tab1/tab1.module#Tab1PageModule'
+            loadChildren: './tabs/board-goals/board-goals.module#Tab1PageModule'
           }
         ]
       },
@@ -41,7 +41,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: '/tabs/goals',
         pathMatch: 'full'
       }
     ]

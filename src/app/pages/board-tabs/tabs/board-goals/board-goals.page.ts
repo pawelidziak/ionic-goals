@@ -5,11 +5,11 @@ import {Goal} from '@core/models/Goal';
 
 @Component({
   selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
+  templateUrl: 'board-goals.page.html',
+  styleUrls: ['board-goals.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Tab1Page implements OnInit, OnDestroy {
+export class BoardGoalsPage implements OnInit, OnDestroy {
   currentBoard: Board;
   nowDate: Date = new Date();
   startDate: Date;
@@ -42,20 +42,20 @@ export class Tab1Page implements OnInit, OnDestroy {
   goalDone(goal: Goal): void {
     this.removeFromList(goal, this.goalsTodo);
     this.goalsDone.push(goal);
-    Tab1Page.sortList(this.goalsDone);
+    BoardGoalsPage.sortList(this.goalsDone);
   }
 
   goalFailed(goal: Goal): void {
     this.removeFromList(goal, this.goalsTodo);
     this.goalsFailed.push(goal);
-    Tab1Page.sortList(this.goalsFailed);
+    BoardGoalsPage.sortList(this.goalsFailed);
   }
 
   undoToTodo(goal: Goal): void {
     this.removeFromList(goal, this.goalsDone);
     this.removeFromList(goal, this.goalsFailed);
     this.goalsTodo.push(goal);
-    Tab1Page.sortList(this.goalsTodo);
+    BoardGoalsPage.sortList(this.goalsTodo);
   }
 
   private removeFromList(goal: Goal, list: Goal[]): void {
