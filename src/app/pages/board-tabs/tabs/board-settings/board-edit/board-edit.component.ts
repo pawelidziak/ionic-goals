@@ -41,6 +41,7 @@ export class BoardEditComponent implements OnInit {
   private async submitBoard(): Promise<void> {
     await this.modalController.dismiss(this.boardForm.value);
   }
+
   onSelectChange(ev: CustomEvent): void {
     this.selectedColor = this.getColor(ev.detail.value);
   }

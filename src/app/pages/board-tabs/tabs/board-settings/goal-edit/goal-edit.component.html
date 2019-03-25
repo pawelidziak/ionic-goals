@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
         <ion-title>
-            {{goal ? 'Update' : 'Add'}} Goal
+            {{isNew ? 'Add' : 'Update'}} Goal
         </ion-title>
         <ion-button slot="end" fill="clear" (click)="dismissGoalModal()">Cancel</ion-button>
     </ion-toolbar>
@@ -31,7 +31,7 @@
                         expand="block"
                         type="submit"
                         [disabled]="!goalForm.valid">
-                {{goal ? 'Update' : 'Add'}}
+                {{isNew ? 'Add' : 'Update'}}
             </ion-button>
         </ion-list>
     </form>

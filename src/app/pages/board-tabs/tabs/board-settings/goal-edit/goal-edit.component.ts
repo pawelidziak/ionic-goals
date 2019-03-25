@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
-import {Goal} from '../../../../../core/models/Goal';
+import {Goal} from '@core/models/Goal';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
@@ -12,6 +12,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 export class GoalEditComponent implements OnInit {
   goalForm: FormGroup;
   @Input() goal: Goal;
+  @Input() isNew: boolean;
 
   constructor(private modalController: ModalController,
               private formBuilder: FormBuilder) {
@@ -19,8 +20,9 @@ export class GoalEditComponent implements OnInit {
 
   ngOnInit() {
     this.goalForm = this.createForm({
-      name: this.goal ? this.goal.name : '',
-      description: this.goal ? this.goal.description : '',
+      name: this.goal.name,
+      description: this.goal.description,
+      number: this.goal.number
     });
   }
 

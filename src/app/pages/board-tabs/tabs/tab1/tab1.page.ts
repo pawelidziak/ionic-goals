@@ -1,10 +1,7 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {BoardService} from '@core/services/board.service';
 import {Board} from '@core/models/Board';
 import {Goal} from '@core/models/Goal';
-import {ModalController} from '@ionic/angular';
-import {GoalEditComponent} from '../board-settings/goal-edit/goal-edit.component';
-import {OverlayEventDetail} from '@ionic/core';
 
 @Component({
   selector: 'app-tab1',
@@ -20,9 +17,7 @@ export class Tab1Page implements OnInit, OnDestroy {
   goalsDone: Goal[] = [];
   goalsFailed: Goal[] = [];
 
-  constructor(private boardService: BoardService,
-              private changeDetector: ChangeDetectorRef,
-              private modalController: ModalController) {
+  constructor(private boardService: BoardService) {
     window.addEventListener('beforeunload', () => {
       // TODO save progress to server
       console.log('destr')
@@ -74,11 +69,4 @@ export class Tab1Page implements OnInit, OnDestroy {
     list.sort((a, b) => a.number > b.number ? 1 : -1);
   }
 
-
-
-  private addNewGoal(newGoal: Goal): void {
-    newGoal.number = this.currentBoard.goals.length;
-    this.goalsTodo.push(newGoal);
-    this.currentBoard.goals.push(newGoal);
-  }
 }

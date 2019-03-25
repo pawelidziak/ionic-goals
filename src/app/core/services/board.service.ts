@@ -41,4 +41,8 @@ export class BoardService {
     };
     return of(tmpBoard);
   }
+
+  updateBoard(board: Board) {
+
+  }
 }

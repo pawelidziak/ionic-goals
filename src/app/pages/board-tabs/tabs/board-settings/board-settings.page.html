@@ -40,7 +40,7 @@
                 <p>Add or edit Your goals.</p>
             </ion-label>
 
-            <ion-button fill="clear" slot="end" color="medium" (click)="openNewGoalModal()">
+            <ion-button fill="clear" slot="end" color="medium" (click)="openGoalModal()">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
             </ion-button>
         </ion-item>
@@ -48,8 +48,11 @@
 
             <ion-list *ngIf="currentBoard.goals.length > 0">
                 <ion-item *ngFor="let goal of currentBoard.goals; let i=index"
-                          (click)="openNewGoalModal(goal)"
+                          (click)="openGoalModal(goal)"
                           [lines]="i < currentBoard.goals.length - 1 ? 'full' : 'none'">
+                    <ion-badge [color]="i % 2 === 0 ? 'tertiary' : 'secondary'"
+                               class="goal-number"
+                               slot="start">#{{goal.number}}</ion-badge>
                     <ion-label text-wrap>
                         <h2>{{goal.name}}</h2>
                         <p>{{goal.description}}</p>

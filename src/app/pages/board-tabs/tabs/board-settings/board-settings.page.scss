@@ -1,7 +1,3 @@
-ion-card {
-  margin-top: 24px;
-}
-
 ion-item {
   --inner-padding-end: 0;
 }
@@ -20,4 +16,8 @@ ion-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.goal-number {
+  padding: 4px 7px;
 }
