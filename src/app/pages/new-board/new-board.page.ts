@@ -4,6 +4,9 @@ import {Router} from '@angular/router';
 import {BOARD_COLORS} from './boardColors';
 import {Board} from '@core/models/Board';
 import {BoardColor} from '@core/models/BoardColor';
+import {BoardService} from '@core/services/board.service';
+import * as firebase from 'firebase';
+import DocumentReference = firebase.firestore.DocumentReference;
 
 @Component({
   selector: 'app-new-board',
@@ -16,7 +19,9 @@ export class NewBoardPage implements OnInit {
   colors: BoardColor[] = BOARD_COLORS;
   selectedColor: string = this.colors[0].hex;
 
-  constructor(private router: Router, private formBuilder: FormBuilder) {
+  constructor(private router: Router,
+              private boardService: BoardService,
+              private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
@@ -41,13 +46,13 @@ export class NewBoardPage implements OnInit {
   }
 
   private createBoard(): void {
-    // TODO
-    console.log(this.newBoardForm.value);
-    this.goToBoard();
+    this.boardService.addBoard(this.newBoardForm.value)
+      .then((res: DocumentReference) => this.goToBoard(res.id))
+      .catch(err => console.error(err));
   }
 
-  private goToBoard(): void {
-    this.router.navigate([`/board/${'1'}`]);
+  private goToBoard(id: string): void {
+    this.router.navigate([`/board/${id}/tabs/settings`]);
   }
 
   private getColor(value: string): string {

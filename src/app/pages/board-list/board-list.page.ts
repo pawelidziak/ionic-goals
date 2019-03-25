@@ -1,8 +1,9 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Board} from '@core/models/Board';
 import {BOARD_COLORS} from '@pages/new-board/boardColors';
 import {BoardColor} from '@core/models/BoardColor';
+import {BoardService} from '@core/services/board.service';
 
 @Component({
   selector: 'app-list',
@@ -12,23 +13,19 @@ import {BoardColor} from '@core/models/BoardColor';
 })
 export class BoardListPage implements OnInit {
   colors: BoardColor[] = BOARD_COLORS;
-  tmpBoards: Board[] = [];
+  boards: Board[];
 
-  constructor(private router: Router) {
-    for (let i = 1; i < 7; i++) {
-      this.tmpBoards.push(
-        {
-          id: `${i}`,
-          title: 'Board ' + i,
-          description: 'This is simple description for Board  #' + i,
-          color: this.colors[Math.floor(Math.random() * this.colors.length)].hex,
-          startDate: 'Data #' + i
-        }
-      )
-    }
+  constructor(private router: Router,
+              private changeDetector: ChangeDetectorRef,
+              private boardService: BoardService) {
+
   }
 
   ngOnInit() {
+    this.boardService.getBoards().subscribe(res => {
+      this.boards = res;
+      this.changeDetector.markForCheck();
+    });
   }
 
   navigateToBoard(board: Board) {

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {BoardService} from '@core/services/board.service';
 import {Board} from '@core/models/Board';
 import {Goal} from '@core/models/Goal';
@@ -9,7 +9,7 @@ import {Goal} from '@core/models/Goal';
   styleUrls: ['board-goals.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardGoalsPage implements OnInit, OnDestroy {
+export class BoardGoalsPage implements OnInit{
   currentBoard: Board;
   nowDate: Date = new Date();
   startDate: Date;
@@ -17,7 +17,8 @@ export class BoardGoalsPage implements OnInit, OnDestroy {
   goalsDone: Goal[] = [];
   goalsFailed: Goal[] = [];
 
-  constructor(private boardService: BoardService) {
+  constructor(private boardService: BoardService,
+              private changeDetector: ChangeDetectorRef) {
     window.addEventListener('beforeunload', () => {
       // TODO save progress to server
       console.log('destr')
@@ -29,14 +30,15 @@ export class BoardGoalsPage implements OnInit, OnDestroy {
       (res: Board) => {
         this.currentBoard = res;
         this.startDate = new Date(this.currentBoard.startDate);
-        this.assignGoals();
+        if (this.currentBoard.goals) {
+          this.assignGoals();
+        }
+        this.changeDetector.markForCheck();
       },
       error => console.error(error));
   }
-
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     // TODO save progress to server
-    console.log('destr')
   }
 
   goalDone(goal: Goal): void {
@@ -70,6 +72,7 @@ export class BoardGoalsPage implements OnInit, OnDestroy {
   }
 
   private assignGoals(): void {
+    this.goalsTodo = [];
     for (const goal of this.currentBoard.goals) {
       if (goal.frequency.includes(this.nowDate.getDay())) {
         this.goalsTodo.push(goal);

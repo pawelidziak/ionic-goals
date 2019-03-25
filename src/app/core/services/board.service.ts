@@ -3,6 +3,9 @@ import {Observable, of} from 'rxjs';
 import {Board} from '../models/Board';
 import {CacheUtils} from '../utlis/cache.utils';
 import {shareReplay} from 'rxjs/operators';
+import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
+import {map} from 'rxjs/operators';
+import {BOARD_COLORS} from '@pages/new-board/boardColors';
 
 const CACHE_SIZE = 1;
 const CURRENT_BOARD = 'current_board';
@@ -12,7 +15,41 @@ const CURRENT_BOARD = 'current_board';
 })
 export class BoardService {
 
+  private boardCollection: AngularFirestoreCollection<Board>;
+  private boards: Observable<Board[]>;
   private currentBoardId: string;
+
+  constructor(db: AngularFirestore) {
+    this.boardCollection = db.collection<Board>('boards');
+  }
+
+  getBoards() {
+    return this.boardCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return {id, ...data};
+        });
+      })
+    );
+  }
+
+  addBoard(board: Board) {
+    board.color = BOARD_COLORS[BOARD_COLORS.findIndex(x=>x.value === board.color)].hex;
+    board.goals = [];
+    return this.boardCollection.add(board);
+  }
+
+  updateBoard(board: Board) {
+    return this.boardCollection.doc(this.currentBoardId).update(board);
+  }
+
+  removeBoard(id) {
+    return this.boardCollection.doc(id).delete();
+  }
+
+  /////////////////////////////
 
   public getCurrentBoard(): Observable<Board> {
     return CacheUtils.get(CURRENT_BOARD);
@@ -26,23 +63,7 @@ export class BoardService {
   }
 
   private requestGetBoardById(id: string): Observable<Board> {
-    // TODO get board from server
-    const tmpBoard: Board = {
-      id: id,
-      title: 'TMP board one',
-      description: 'Simple tmp description for board one',
-      color: 'blue',
-      startDate: '2019-03-23',
-      goals: [
-        {number: 1, name: 'Siłownia', description: 'Goal 1 description', frequency: [1, 2]},
-        {number: 2, name: 'Czytanie', description: 'Goal 2 description', frequency: [1, 2, 3, 4, 5, 6, 7]},
-        {number: 3, name: 'Medytacja', description: 'Goal 3 description', frequency: [1, 3, 4]}
-      ]
-    };
-    return of(tmpBoard);
+    return this.boardCollection.doc<Board>(id).valueChanges();
   }
 
-  updateBoard(board: Board) {
-
-  }
 }

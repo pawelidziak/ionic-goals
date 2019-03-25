@@ -13,9 +13,8 @@ import {BoardEditComponent} from './board-edit/board-edit.component';
   styleUrls: ['board-settings.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardSettingsPage implements OnInit, OnDestroy {
+export class BoardSettingsPage implements OnInit {
   currentBoard: Board;
-  startDate: Date;
 
   constructor(private boardService: BoardService,
               private changeDetector: ChangeDetectorRef,
@@ -30,16 +29,14 @@ export class BoardSettingsPage implements OnInit, OnDestroy {
     this.boardService.getCurrentBoard().subscribe(
       (res: Board) => {
         this.currentBoard = res;
-        this.startDate = new Date(this.currentBoard.startDate);
+        this.changeDetector.markForCheck();
       },
       error => console.error(error));
   }
 
-  ngOnDestroy(): void {
-    // TODO save progress to server
-    console.log('destr')
+  ionViewWillLeave() {
+    this.boardService.updateBoard(this.currentBoard);
   }
-
   /**
    *    GOAL MODAL
    */
@@ -55,7 +52,7 @@ export class BoardSettingsPage implements OnInit, OnDestroy {
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
       if (detail && detail.data) {
         this.addOrEditGoal(detail.data);
-        this.changeDetector.markForCheck()
+        this.changeDetector.markForCheck();
       }
     });
     return await modal.present();
@@ -68,6 +65,8 @@ export class BoardSettingsPage implements OnInit, OnDestroy {
     } else {
       this.currentBoard.goals.push(goal);
     }
+    const tmp = this.currentBoard.goals;
+    this.currentBoard.goals = [...tmp];
   }
 
   private createEmptyGoal(): Goal {

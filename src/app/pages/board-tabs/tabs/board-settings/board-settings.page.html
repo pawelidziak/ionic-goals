@@ -4,7 +4,7 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>
-            {{currentBoard.title}}
+            {{currentBoard?.title}}
         </ion-title>
 
     </ion-toolbar>
@@ -25,8 +25,13 @@
             </ion-button>
         </ion-item>
         <ion-card-content>
-            <ion-label text-wrap>
-                <p>{{startDate | date}}</p>
+            <ng-container *ngIf="!currentBoard">
+                <ion-skeleton-text></ion-skeleton-text>
+                <ion-skeleton-text style="width: 60%"></ion-skeleton-text>
+                <ion-skeleton-text style="width: 30%"></ion-skeleton-text>
+            </ng-container>
+            <ion-label text-wrap *ngIf="currentBoard">
+                <p>{{currentBoard.startDate}}</p>
                 <h2 class="board-title">{{currentBoard.title}}</h2>
                 <p>{{currentBoard.description}}</p>
             </ion-label>
@@ -46,36 +51,50 @@
             </ion-button>
         </ion-item>
         <ion-card-content no-padding>
-            <ion-list *ngIf="currentBoard.goals.length > 0">
-                <ion-item *ngFor="let goal of currentBoard.goals; let i=index"
-                          (click)="openGoalModal(goal)"
-                          [lines]="i < currentBoard.goals.length - 1 ? 'full' : 'none'">
-                    <ion-badge [color]="i % 2 === 0 ? 'tertiary' : 'secondary'"
-                               class="goal-number"
-                               slot="start">#{{goal.number}}</ion-badge>
-                    <ion-label text-wrap>
-                        <p *ngIf="goal.frequency.length < 7">
-                            <span *ngFor="let day of goal.frequency; let i=index" class="day-text">
-                                <span *ngIf="day === 1">Mon</span>
-                                <span *ngIf="day === 2">Tue</span>
-                                <span *ngIf="day === 3">Wed</span>
-                                <span *ngIf="day === 4">Thu</span>
-                                <span *ngIf="day === 5">Fri</span>
-                                <span *ngIf="day === 6">Sat</span>
-                                <span *ngIf="day === 7">Sun</span>
-                                <span *ngIf="i < goal.frequency.length - 1">, </span>
-                            </span>
-                        </p>
-                        <p *ngIf="goal.frequency.length === 7" class="day-text">Everyday</p>
-                        <h2 style="margin: 6px 0; font-size: 1.1rem;">{{goal.name}}</h2>
-                        <p>{{goal.description}}</p>
-                    </ion-label>
-                </ion-item>
-            </ion-list>
-            <div class="no-goals" *ngIf="currentBoard.goals.length === 0" text-center>
-                <ion-icon size="large" color="primary" name="sad" margin-bottom="24"></ion-icon>
-                <ion-text>You have no goals. Add some!</ion-text>
-            </div>
+
+            <ng-container *ngIf="!currentBoard">
+                <div *ngFor="let n of [0,1,2,3]" padding>
+                    <ion-skeleton-text></ion-skeleton-text>
+                    <p>
+                        <ion-skeleton-text style="width: 60%"></ion-skeleton-text>
+                    </p>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="currentBoard">
+
+                <ion-list *ngIf="currentBoard.goals.length > 0">
+                    <ion-item *ngFor="let goal of currentBoard.goals; let i=index"
+                              (click)="openGoalModal(goal)"
+                              [lines]="i < currentBoard.goals.length - 1 ? 'full' : 'none'">
+                        <ion-badge [color]="i % 2 === 0 ? 'tertiary' : 'secondary'"
+                                   class="goal-number"
+                                   slot="start">#{{goal.number}}</ion-badge>
+                        <ion-label text-wrap>
+                            <p *ngIf="goal.frequency.length < 7">
+                                <span *ngFor="let day of goal.frequency; let i=index" class="day-text">
+                                    <span *ngIf="day === 1">Mon</span>
+                                    <span *ngIf="day === 2">Tue</span>
+                                    <span *ngIf="day === 3">Wed</span>
+                                    <span *ngIf="day === 4">Thu</span>
+                                    <span *ngIf="day === 5">Fri</span>
+                                    <span *ngIf="day === 6">Sat</span>
+                                    <span *ngIf="day === 7">Sun</span>
+                                    <span *ngIf="i < goal.frequency.length - 1">, </span>
+                                </span>
+                            </p>
+                            <p *ngIf="goal.frequency.length === 7" class="day-text">Everyday</p>
+                            <h2 style="margin: 6px 0; font-size: 1.1rem;">{{goal.name}}</h2>
+                            <p>{{goal.description}}</p>
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+
+                <div class="no-goals" *ngIf="!currentBoard.goals || currentBoard.goals?.length === 0" text-center>
+                    <ion-text padding>You have no goals.</ion-text>
+                    <ion-button fill="outline" shape="round"  (click)="openGoalModal()">Add Goal</ion-button>
+                </div>
+            </ng-container>
         </ion-card-content>
     </ion-card>
 </ion-content>

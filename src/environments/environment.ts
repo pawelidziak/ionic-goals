@@ -3,7 +3,15 @@
 // The board-list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyDvdutjeLYl4PY0swmUAs76aJ-UUMX2rfY',
+    authDomain: 'goals-booster.firebaseapp.com',
+    databaseURL: 'https://goals-booster.firebaseio.com',
+    projectId: 'goals-booster',
+    storageBucket: 'goals-booster.appspot.com',
+    messagingSenderId: '749295842606'
+  }
 };
 
 /*

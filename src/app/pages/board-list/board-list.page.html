@@ -4,7 +4,7 @@
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>
-            List
+            Your Boards
         </ion-title>
         <ion-buttons slot="end">
             <ion-button routerLink="/new-board">
@@ -15,13 +15,34 @@
 </ion-header>
 
 <ion-content>
+    <ng-container *ngIf="!boards">
+        <div *ngFor="let n of [0,1]" padding>
+            <ion-skeleton-text></ion-skeleton-text>
+            <p>
+                <ion-skeleton-text style="width: 60%"></ion-skeleton-text>
+            </p>
+            <p>
+                <ion-skeleton-text style="width: 30%"></ion-skeleton-text>
+            </p>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="boards?.length === 0">
+        <ion-item lines="none" text-center>
+            <ion-label color="primary" style="margin-top: 24px">
+                You do not have any boards!
+            </ion-label>
+        </ion-item>
+        <div style="display: flex; justify-content: center;">
+            <ion-button fill="outline" shape="round" routerLink="/new-board">Add Board</ion-button>
+        </div>
+    </ng-container>
 
     <ion-list>
-        <ion-item *ngFor="let board of tmpBoards" (click)="navigateToBoard(board)" routerLink>
+        <ion-item *ngFor="let board of boards" (click)="navigateToBoard(board)" routerLink>
             <div slot="start"
                  class="board-icon"
                  [style.background-color]="board.color">
-                <span class="board-letter" >{{board.title[0].toUpperCase()}}</span>
+                <span class="board-letter">{{board.title[0].toUpperCase()}}</span>
             </div>
             <ion-label text-wrap>
                 <ion-text color="primary">
