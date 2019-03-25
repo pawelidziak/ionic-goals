@@ -29,7 +29,7 @@ export class BoardGoalsPage implements OnInit, OnDestroy {
       (res: Board) => {
         this.currentBoard = res;
         this.startDate = new Date(this.currentBoard.startDate);
-        this.goalsTodo = [...this.currentBoard.goals];
+        this.assignGoals();
       },
       error => console.error(error));
   }
@@ -69,4 +69,11 @@ export class BoardGoalsPage implements OnInit, OnDestroy {
     list.sort((a, b) => a.number > b.number ? 1 : -1);
   }
 
+  private assignGoals(): void {
+    for (const goal of this.currentBoard.goals) {
+      if (goal.frequency.includes(this.nowDate.getDay())) {
+        this.goalsTodo.push(goal);
+      }
+    }
+  }
 }

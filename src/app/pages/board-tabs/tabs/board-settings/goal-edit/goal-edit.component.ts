@@ -10,28 +10,54 @@ import {FormBuilder, FormGroup} from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GoalEditComponent implements OnInit {
-  goalForm: FormGroup;
   @Input() goal: Goal;
   @Input() isNew: boolean;
+  goalForm: FormGroup;
+  goalFrequency: any[] = [
+    {
+      value: 1,
+      label: 'Monday'
+    },
+    {
+      value: 2,
+      label: 'Tuesday'
+    },
+    {
+      value: 3,
+      label: 'Wednesday'
+    },
+    {
+      value: 4,
+      label: 'Thursday'
+    },
+    {
+      value: 5,
+      label: 'Friday'
+    },
+    {
+      value: 6,
+      label: 'Saturday'
+    },
+    {
+      value: 7,
+      label: 'Sunday'
+    }
+  ];
+
 
   constructor(private modalController: ModalController,
               private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
-    this.goalForm = this.createForm({
-      name: this.goal.name,
-      description: this.goal.description,
-      number: this.goal.number
-    });
-  }
-
-  private createForm(model: Goal): FormGroup {
-    return this.formBuilder.group(model);
-  }
-
-  private updateForm(model: Partial<Goal>): void {
-    this.goalForm.patchValue(model)
+    this.goalForm = this.formBuilder.group(
+      {
+        name: this.goal.name,
+        description: this.goal.description,
+        number: this.goal.number,
+        frequency: [this.goal.frequency]
+      }
+    );
   }
 
   private async submitGoal(): Promise<void> {

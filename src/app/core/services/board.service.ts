@@ -34,9 +34,9 @@ export class BoardService {
       color: 'blue',
       startDate: '2019-03-23',
       goals: [
-        {number: 1, name: 'Goal 1', description: 'Goal 1 description'},
-        {number: 2, name: 'Goal 2', description: 'Goal 2 description'},
-        {number: 3, name: 'Goal 3', description: 'Goal 3 description'}
+        {number: 1, name: 'Siłownia', description: 'Goal 1 description', frequency: [1, 2]},
+        {number: 2, name: 'Czytanie', description: 'Goal 2 description', frequency: [1, 2, 3, 4, 5, 6, 7]},
+        {number: 3, name: 'Medytacja', description: 'Goal 3 description', frequency: [1, 3, 4]}
       ]
     };
     return of(tmpBoard);

@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content padding>
-
     <form [formGroup]="goalForm" (submit)="submitGoal()">
 
         <ion-list>
@@ -24,6 +23,15 @@
             <!-- DESCRIPTION -->
             <ion-item>
                 <ion-input formControlName="description" placeholder="Description"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-label>Frequency</ion-label>
+                <ion-select multiple="true" formControlName="frequency" required>
+                    <ion-select-option *ngFor="let day of goalFrequency" [value]="day.value">
+                        {{day.label}}
+                    </ion-select-option>
+                </ion-select>
             </ion-item>
 
             <!-- SUBMIT -->

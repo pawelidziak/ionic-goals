@@ -74,7 +74,8 @@ export class BoardSettingsPage implements OnInit, OnDestroy {
     return {
       name: '',
       description: '',
-      number: this.currentBoard.goals.length + 1
+      number: this.currentBoard.goals.length + 1,
+      frequency: [1, 2, 3, 4, 5, 6, 7]
     };
   }
 
