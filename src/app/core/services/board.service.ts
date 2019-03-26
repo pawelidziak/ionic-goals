@@ -6,6 +6,7 @@ import {map, shareReplay} from 'rxjs/operators';
 import {BOARD_COLORS} from '@pages/new-board/boardColors';
 import {Progress} from '@core/models/Progress';
 import {Board} from '@core/models/Board';
+import {Goal} from '@core/models/Goal';
 
 const CACHE_SIZE = 1;
 const CURRENT_BOARD = 'current_board';
@@ -91,30 +92,6 @@ export class BoardService {
       .set(todayProgress);
   }
 
-  updateProgress(board: Board) {
-    this.getProgress().subscribe((progress: Progress) => {
-      if (progress) {
-        const today = new Date();
-        let toSave = false;
-        const allTodayGoals = board.goals.filter(goal => goal.frequency.includes(`${today.getDay()}`));
-        for (const goal of allTodayGoals) {
-          const indexTodo = progress.goalsTodo.findIndex(x => x.number === goal.number);
-          const indexDone = progress.goalsDone.findIndex(x => x.number === goal.number);
-          const indexFailed = progress.goalsFailed.findIndex(x => x.number === goal.number);
-          if (indexTodo === -1 && indexDone === -1 && indexFailed === -1) {
-            progress.goalsTodo.push(goal);
-            toSave = true;
-          }
-        }
-        if (toSave) {
-          this.saveProgress(progress);
-        }
-      } else {
-        this.createProgress(board);
-      }
-    });
-  }
-
   createProgress(currentBoard: Board) {
     const today = new Date();
     this.saveProgress({
@@ -122,6 +99,43 @@ export class BoardService {
       goalsDone: [],
       goalsTodo: currentBoard.goals.filter(goal => goal.frequency.includes(`${today.getDay()}`))
     });
+  }
+
+  updateProgress(board: Board) {
+    this.getProgress().subscribe((progress: Progress) => {
+      if (progress) {
+        const today = new Date();
+        const allTodayGoals = board.goals.filter(goal => goal.frequency.includes(`${today.getDay()}`));
+        // if (allTodayGoals.length === progress.goalsTodo.length + progress.goalsDone.length + progress.goalsFailed.length) {
+        //   return
+        // }
+        for (const goal of allTodayGoals) {
+          this.addMissingGoal(progress, goal);
+          this.replaceDifferentGoal(progress.goalsTodo, goal);
+          this.replaceDifferentGoal(progress.goalsDone, goal);
+          this.replaceDifferentGoal(progress.goalsFailed, goal);
+        }
+        this.saveProgress(progress);
+      } else {
+        this.createProgress(board);
+      }
+    });
+  }
+
+  private replaceDifferentGoal(list: Goal[], goal: Goal) {
+    const index = list.findIndex(x => x.number === goal.number);
+    if (index !== -1 && JSON.stringify(list[index]) !== JSON.stringify(goal)) {
+      list[index] = goal;
+    }
+  }
+
+  private addMissingGoal(progress: Progress, goal: Goal) {
+    const indexTodo = progress.goalsTodo.findIndex(x => x.number === goal.number);
+    const indexDone = progress.goalsDone.findIndex(x => x.number === goal.number);
+    const indexFailed = progress.goalsFailed.findIndex(x => x.number === goal.number);
+    if (indexTodo === -1 && indexDone === -1 && indexFailed === -1) {
+      progress.goalsTodo.push(goal);
+    }
   }
 
   private getDateString(today: Date = new Date()) {
