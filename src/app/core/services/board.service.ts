@@ -1,14 +1,15 @@
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {Board} from '../models/Board';
+import {Observable} from 'rxjs';
 import {CacheUtils} from '../utlis/cache.utils';
-import {shareReplay} from 'rxjs/operators';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {map} from 'rxjs/operators';
+import {map, shareReplay} from 'rxjs/operators';
 import {BOARD_COLORS} from '@pages/new-board/boardColors';
+import {Progress} from '@core/models/Progress';
+import {Board} from '@core/models/Board';
 
 const CACHE_SIZE = 1;
 const CURRENT_BOARD = 'current_board';
+const CURRENT_PROGRESS = 'current_progress';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,13 @@ const CURRENT_BOARD = 'current_board';
 export class BoardService {
 
   private boardCollection: AngularFirestoreCollection<Board>;
-  private boards: Observable<Board[]>;
   private currentBoardId: string;
 
   constructor(db: AngularFirestore) {
     this.boardCollection = db.collection<Board>('boards');
   }
 
-  getBoards() {
+  getBoards(): Observable<Board[]> {
     return this.boardCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
@@ -35,35 +35,103 @@ export class BoardService {
     );
   }
 
-  addBoard(board: Board) {
-    board.color = BOARD_COLORS[BOARD_COLORS.findIndex(x=>x.value === board.color)].hex;
+  addBoard(board: Board): Promise<any> {
+    board.color = BOARD_COLORS[BOARD_COLORS.findIndex(x => x.value === board.color)].hex;
     board.goals = [];
     return this.boardCollection.add(board);
   }
 
-  updateBoard(board: Board) {
+  updateBoard(board: Board): Promise<void> {
     return this.boardCollection.doc(this.currentBoardId).update(board);
   }
 
-  removeBoard(id) {
+  removeBoard(id): Promise<void> {
     return this.boardCollection.doc(id).delete();
   }
 
-  /////////////////////////////
-
-  public getCurrentBoard(): Observable<Board> {
+  getCurrentBoard(): Observable<Board> {
     return CacheUtils.get(CURRENT_BOARD);
   }
 
-  public setBoardToCache(id: string) {
+  setBoardToCache(id: string) {
     if (this.currentBoardId !== id || !CacheUtils.get(CURRENT_BOARD)) {
       this.currentBoardId = id;
+      CacheUtils.clear(CURRENT_PROGRESS);
       CacheUtils.set(CURRENT_BOARD, this.requestGetBoardById(id).pipe(shareReplay(CACHE_SIZE)));
     }
   }
 
   private requestGetBoardById(id: string): Observable<Board> {
     return this.boardCollection.doc<Board>(id).valueChanges();
+  }
+
+  /*
+      PROGRESS
+   */
+  getProgress(): Observable<Progress> {
+    if (!CacheUtils.get(CURRENT_PROGRESS)) {
+      CacheUtils.set(CURRENT_PROGRESS, this.requestGetProgress().pipe(shareReplay(CACHE_SIZE)));
+    }
+    return CacheUtils.get(CURRENT_PROGRESS);
+  }
+
+  private requestGetProgress(): Observable<Progress> {
+    return this.boardCollection
+      .doc<Board>(this.currentBoardId)
+      .collection('progress')
+      .doc<Progress>(this.getDateString())
+      .valueChanges();
+  }
+
+  saveProgress(todayProgress: Progress) {
+    return this.boardCollection
+      .doc<Board>(this.currentBoardId)
+      .collection('progress')
+      .doc<Progress>(this.getDateString())
+      .set(todayProgress);
+  }
+
+  updateProgress(board: Board) {
+    this.getProgress().subscribe((progress: Progress) => {
+      if (progress) {
+        const today = new Date();
+        let toSave = false;
+        const allTodayGoals = board.goals.filter(goal => goal.frequency.includes(`${today.getDay()}`));
+        for (const goal of allTodayGoals) {
+          const indexTodo = progress.goalsTodo.findIndex(x => x.number === goal.number);
+          const indexDone = progress.goalsDone.findIndex(x => x.number === goal.number);
+          const indexFailed = progress.goalsFailed.findIndex(x => x.number === goal.number);
+          if (indexTodo === -1 && indexDone === -1 && indexFailed === -1) {
+            progress.goalsTodo.push(goal);
+            toSave = true;
+          }
+        }
+        if (toSave) {
+          this.saveProgress(progress);
+        }
+      } else {
+        this.createProgress(board);
+      }
+    });
+  }
+
+  createProgress(currentBoard: Board) {
+    const today = new Date();
+    this.saveProgress({
+      goalsFailed: [],
+      goalsDone: [],
+      goalsTodo: currentBoard.goals.filter(goal => goal.frequency.includes(`${today.getDay()}`))
+    });
+  }
+
+  private getDateString(today: Date = new Date()) {
+    const mm = today.getMonth() + 1; // getMonth() is zero-based
+    const dd = today.getDate();
+
+    return [today.getFullYear(),
+      (mm > 9 ? '' : '0') + mm,
+      (dd > 9 ? '' : '0') + dd
+    ].join('-');
   }
 
 }

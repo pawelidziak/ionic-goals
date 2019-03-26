@@ -1,7 +1,9 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {BoardService} from '@core/services/board.service';
 import {Board} from '@core/models/Board';
 import {Goal} from '@core/models/Goal';
+import {Progress} from '@core/models/Progress';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-tab1',
@@ -9,59 +11,59 @@ import {Goal} from '@core/models/Goal';
   styleUrls: ['board-goals.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BoardGoalsPage implements OnInit{
+export class BoardGoalsPage implements OnInit {
+  private origTodo: Goal[];
   currentBoard: Board;
   nowDate: Date = new Date();
-  startDate: Date;
-  goalsTodo: Goal[] = [];
-  goalsDone: Goal[] = [];
-  goalsFailed: Goal[] = [];
+  todayProgress: Progress;
 
-  constructor(private boardService: BoardService,
+  constructor(private route: ActivatedRoute,
+              private boardService: BoardService,
               private changeDetector: ChangeDetectorRef) {
-    window.addEventListener('beforeunload', () => {
-      // TODO save progress to server
-      console.log('destr')
-    });
   }
 
   ngOnInit(): void {
-
-    const tmp = '123';
-    console.log(tmp.includes('1'));
-
-    this.boardService.getCurrentBoard().subscribe(
-      (res: Board) => {
-        this.currentBoard = res;
-        this.startDate = new Date(this.currentBoard.startDate);
-        if (this.currentBoard.goals) {
-          this.assignGoals();
-        }
-        this.changeDetector.markForCheck();
-      },
-      error => console.error(error));
+    this.boardService.getCurrentBoard()
+      .subscribe((board: Board) => {
+        this.currentBoard = board;
+        this.checkProgress();
+      });
   }
+
+  private checkProgress(): void {
+    this.boardService.getProgress().subscribe((progress: Progress) => {
+      if(!progress){
+        this.boardService.createProgress(this.currentBoard);
+      }
+      this.todayProgress = progress;
+      this.origTodo = this.todayProgress ? [...this.todayProgress.goalsTodo] : [];
+      this.changeDetector.markForCheck();
+    });
+  }
+
   ionViewWillLeave() {
-    // TODO save progress to server
+    if (this.origTodo.length !== this.todayProgress.goalsTodo.length) {
+      this.boardService.saveProgress(this.todayProgress);
+    }
   }
 
   goalDone(goal: Goal): void {
-    this.removeFromList(goal, this.goalsTodo);
-    this.goalsDone.push(goal);
-    BoardGoalsPage.sortList(this.goalsDone);
+    this.removeFromList(goal, this.todayProgress.goalsTodo);
+    this.todayProgress.goalsDone.push(goal);
+    BoardGoalsPage.sortList(this.todayProgress.goalsDone);
   }
 
   goalFailed(goal: Goal): void {
-    this.removeFromList(goal, this.goalsTodo);
-    this.goalsFailed.push(goal);
-    BoardGoalsPage.sortList(this.goalsFailed);
+    this.removeFromList(goal, this.todayProgress.goalsTodo);
+    this.todayProgress.goalsFailed.push(goal);
+    BoardGoalsPage.sortList(this.todayProgress.goalsFailed);
   }
 
   undoToTodo(goal: Goal): void {
-    this.removeFromList(goal, this.goalsDone);
-    this.removeFromList(goal, this.goalsFailed);
-    this.goalsTodo.push(goal);
-    BoardGoalsPage.sortList(this.goalsTodo);
+    this.removeFromList(goal, this.todayProgress.goalsDone);
+    this.removeFromList(goal, this.todayProgress.goalsFailed);
+    this.todayProgress.goalsTodo.push(goal);
+    BoardGoalsPage.sortList(this.todayProgress.goalsTodo);
   }
 
   private removeFromList(goal: Goal, list: Goal[]): void {
@@ -73,14 +75,5 @@ export class BoardGoalsPage implements OnInit{
 
   private static sortList(list: Goal[]): void {
     list.sort((a, b) => a.number > b.number ? 1 : -1);
-  }
-
-  private assignGoals(): void {
-    this.goalsTodo = [];
-    for (const goal of this.currentBoard.goals) {
-      if (goal.frequency.includes(`${this.nowDate.getDay()}`)) {
-        this.goalsTodo.push(goal);
-      }
-    }
   }
 }

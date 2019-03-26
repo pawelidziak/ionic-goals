@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Board} from '@core/models/Board';
 import {BoardService} from '@core/services/board.service';
 import {ModalController} from '@ionic/angular';
@@ -6,6 +6,9 @@ import {GoalEditComponent} from './goal-edit/goal-edit.component';
 import {OverlayEventDetail} from '@ionic/core';
 import {Goal} from '@core/models/Goal';
 import {BoardEditComponent} from './board-edit/board-edit.component';
+import {ObjectUtils} from '@core/utlis/object.utils';
+import {Progress} from '@core/models/Progress';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-tab3',
@@ -15,27 +18,27 @@ import {BoardEditComponent} from './board-edit/board-edit.component';
 })
 export class BoardSettingsPage implements OnInit {
   currentBoard: Board;
-
+  private origBoard: string;
   constructor(private boardService: BoardService,
+              private route: ActivatedRoute,
               private changeDetector: ChangeDetectorRef,
               private modalController: ModalController) {
-    window.addEventListener('beforeunload', () => {
-      // TODO save progress to server
-      console.log('destr')
-    });
   }
 
   ngOnInit(): void {
-    this.boardService.getCurrentBoard().subscribe(
-      (res: Board) => {
-        this.currentBoard = res;
+    this.boardService.getCurrentBoard()
+      .subscribe((board: Board) => {
+        this.currentBoard = board;
+        this.origBoard = JSON.stringify(board);
         this.changeDetector.markForCheck();
-      },
-      error => console.error(error));
+      });
   }
 
   ionViewWillLeave() {
-    this.boardService.updateBoard(this.currentBoard);
+    if(this.origBoard !== JSON.stringify(this.currentBoard)){
+      this.boardService.updateBoard(this.currentBoard);
+    }
+    this.boardService.updateProgress(this.currentBoard);
   }
 
   /**
@@ -62,12 +65,14 @@ export class BoardSettingsPage implements OnInit {
   }
 
   private addOrEditGoal(goal: Goal): void {
+    ObjectUtils.cleanObject(goal);
     const index = this.currentBoard.goals.findIndex(x => x.number === goal.number);
     if (index !== -1) {
       this.currentBoard.goals[index] = goal;
     } else {
       this.currentBoard.goals.push(goal);
     }
+    // because we've Onpush strategy so we need to change the reference
     const tmp = this.currentBoard.goals;
     this.currentBoard.goals = [...tmp];
   }

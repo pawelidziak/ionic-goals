@@ -61,7 +61,6 @@ export class GoalEditComponent implements OnInit {
   }
 
   private async submitGoal(): Promise<void> {
-    console.log(this.goal);
     await this.modalController.dismiss(this.goalForm.value);
   }
 

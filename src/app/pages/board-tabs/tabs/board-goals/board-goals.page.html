@@ -18,16 +18,16 @@
         </ion-card-header>
         <ion-card-content no-padding>
 
-            <div class="no-goals-today" *ngIf="currentBoard && goalsTodo.length === 0" text-center>
+            <div class="no-goals-today" *ngIf="todayProgress && todayProgress.goalsTodo.length === 0" text-center>
                 <ion-icon size="large" color="medium" name="happy" margin-bottom="24"></ion-icon>
                 <ion-text color="primary">
                     <p>No goals for today!</p>
                 </ion-text>
             </div>
 
-            <ion-list>
-                <ion-item *ngFor="let goal of goalsTodo; let i=index"
-                          [lines]="i < goalsTodo.length - 1 ? 'full' : 'none'">
+            <ion-list *ngIf="todayProgress">
+                <ion-item *ngFor="let goal of todayProgress.goalsTodo; let i=index"
+                          [lines]="i < todayProgress.goalsTodo.length - 1 ? 'full' : 'none'">
                     <ion-label text-wrap>
                         <h2>{{goal.name}}</h2>
                         <p>{{goal.description}}</p>
@@ -44,9 +44,9 @@
                     </ion-button>
                 </ion-item>
 
-                <ion-item *ngFor="let goal of goalsDone; let i=index"
+                <ion-item *ngFor="let goal of todayProgress.goalsDone; let i=index"
                           class="goal-done"
-                          [lines]="i < goalsDone.length - 1 ? 'full' : 'none'">
+                          [lines]="i < todayProgress.goalsDone.length - 1 ? 'full' : 'none'">
                     <ion-label text-wrap>
                         <h2>{{goal.name}}</h2>
                     </ion-label>
@@ -59,9 +59,9 @@
                 </ion-item>
 
 
-                <ion-item *ngFor="let goal of goalsFailed; let i=index"
+                <ion-item *ngFor="let goal of todayProgress.goalsFailed; let i=index"
                           class="goal-done"
-                          [lines]="i < goalsFailed.length - 1 ? 'full' : 'none'">
+                          [lines]="i < todayProgress.goalsFailed.length - 1 ? 'full' : 'none'">
                     <ion-label text-wrap>
                         <h2>{{goal.name}}</h2>
                     </ion-label>
