@@ -37,6 +37,7 @@ export class BoardSettingsPage implements OnInit {
   ionViewWillLeave() {
     this.boardService.updateBoard(this.currentBoard);
   }
+
   /**
    *    GOAL MODAL
    */
@@ -51,6 +52,8 @@ export class BoardSettingsPage implements OnInit {
 
     modal.onDidDismiss().then((detail: OverlayEventDetail) => {
       if (detail && detail.data) {
+        // convert freq array to one string
+        detail.data.frequency = detail.data.frequency.join('');
         this.addOrEditGoal(detail.data);
         this.changeDetector.markForCheck();
       }
@@ -74,7 +77,7 @@ export class BoardSettingsPage implements OnInit {
       name: '',
       description: '',
       number: this.currentBoard.goals.length + 1,
-      frequency: [1, 2, 3, 4, 5, 6, 7]
+      frequency: '1234567'
     };
   }
 

@@ -15,7 +15,7 @@
 </ion-header>
 
 <ion-content>
-    <ng-container *ngIf="!boards">
+    <ng-container *ngIf="!boards || boards?.length === 0">
         <div *ngFor="let n of [0,1]" padding>
             <ion-skeleton-text></ion-skeleton-text>
             <p>
@@ -36,7 +36,6 @@
             <ion-button fill="outline" shape="round" routerLink="/new-board">Add Board</ion-button>
         </div>
     </ng-container>
-
     <ion-list>
         <ion-item *ngFor="let board of boards" (click)="navigateToBoard(board)" routerLink>
             <div slot="start"

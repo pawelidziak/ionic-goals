@@ -55,12 +55,13 @@ export class GoalEditComponent implements OnInit {
         name: this.goal.name,
         description: this.goal.description,
         number: this.goal.number,
-        frequency: [this.goal.frequency]
+        frequency: [this.goal.frequency.split('').map(Number)]
       }
     );
   }
 
   private async submitGoal(): Promise<void> {
+    console.log(this.goal);
     await this.modalController.dismiss(this.goalForm.value);
   }
 

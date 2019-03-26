@@ -22,8 +22,9 @@ export class BoardListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.boardService.getBoards().subscribe(res => {
-      this.boards = res;
+    this.boardService.getBoards().subscribe((res: Board[]) => {
+        this.boards = res;
+      console.log(this.boards);
       this.changeDetector.markForCheck();
     });
   }

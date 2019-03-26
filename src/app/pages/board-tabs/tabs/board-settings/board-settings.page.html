@@ -72,14 +72,14 @@
                                    slot="start">#{{goal.number}}</ion-badge>
                         <ion-label text-wrap>
                             <p *ngIf="goal.frequency.length < 7">
-                                <span *ngFor="let day of goal.frequency; let i=index" class="day-text">
-                                    <span *ngIf="day === 1">Mon</span>
-                                    <span *ngIf="day === 2">Tue</span>
-                                    <span *ngIf="day === 3">Wed</span>
-                                    <span *ngIf="day === 4">Thu</span>
-                                    <span *ngIf="day === 5">Fri</span>
-                                    <span *ngIf="day === 6">Sat</span>
-                                    <span *ngIf="day === 7">Sun</span>
+                                <span *ngFor="let day of goal.frequency.split(''); let i=index" class="day-text">
+                                    <span *ngIf="day === '1'">Mon</span>
+                                    <span *ngIf="day === '2'">Tue</span>
+                                    <span *ngIf="day === '3'">Wed</span>
+                                    <span *ngIf="day === '4'">Thu</span>
+                                    <span *ngIf="day === '5'">Fri</span>
+                                    <span *ngIf="day === '6'">Sat</span>
+                                    <span *ngIf="day === '7'">Sun</span>
                                     <span *ngIf="i < goal.frequency.length - 1">, </span>
                                 </span>
                             </p>

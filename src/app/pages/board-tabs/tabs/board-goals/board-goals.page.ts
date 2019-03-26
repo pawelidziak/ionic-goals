@@ -26,6 +26,10 @@ export class BoardGoalsPage implements OnInit{
   }
 
   ngOnInit(): void {
+
+    const tmp = '123';
+    console.log(tmp.includes('1'));
+
     this.boardService.getCurrentBoard().subscribe(
       (res: Board) => {
         this.currentBoard = res;
@@ -74,7 +78,7 @@ export class BoardGoalsPage implements OnInit{
   private assignGoals(): void {
     this.goalsTodo = [];
     for (const goal of this.currentBoard.goals) {
-      if (goal.frequency.includes(this.nowDate.getDay())) {
+      if (goal.frequency.includes(`${this.nowDate.getDay()}`)) {
         this.goalsTodo.push(goal);
       }
     }
